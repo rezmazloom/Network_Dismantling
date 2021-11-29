@@ -2,15 +2,15 @@ import FileParser as fp
 import Graph as gp
 import networkx as nx
 
-'''filename='node-edge-pairs.json'
+filename='node-edge-pairs.json'
 data=fp.loadData(filename)
 edges=fp.getEdges(data)
-nodes=fp.getNodes(edges)'''
+nodes=fp.getNodes(edges)
 
-filename2='email-Eu-core-temporal.txt'
+'''filename2='email-Eu-core-temporal.txt'
 fileObject=fp.getFileObject(filename2)
 edges=fp.getEdges2(fileObject)
-nodes=fp.getNodes(edges)
+nodes=fp.getNodes(edges)'''
 
 graph=gp.BuildGraph(nodes, edges)
 
@@ -39,51 +39,59 @@ import NetworkDismantling as ND
 nd=ND.Dismantle(graph)
 
 largest_component_fraction=[]
-efficiency_list=[]
-average_clustering_coefficient=[]
-transitivity=[]
+#efficiency_list=[]
+#average_clustering_coefficient=[]
+#transitivity=[]
 number_of_deletion=[]
 deleted_nodes=[]
-dismantled_graph, largest_component_fraction, efficiency_list, average_clustering_coefficient, transitivity, number_of_deletion, deleted_nodes=nd.dismantle()
+dismantled_graph, largest_component_fraction, number_of_deletion, deleted_nodes=nd.dismantle()
 
 import json
-filewriter=open("Result_Email_CM.txt", "a")
+filewriter=open("Result_BBRoad_DFBC.txt", "a")
 filewriter.write("Largest Component Fraction\n")
 json.dump(largest_component_fraction, filewriter)
-filewriter.write("\n\nEfficiency\n")
-json.dump(efficiency_list, filewriter)
-filewriter.write("\n\nAverage Clustering Coefficient\n")
-json.dump(average_clustering_coefficient, filewriter)
-filewriter.write("\n\nTransitivity\n")
-json.dump(transitivity, filewriter)
+#filewriter.write("\n\nEfficiency\n")
+#json.dump(efficiency_list, filewriter)
+#filewriter.write("\n\nAverage Clustering Coefficient\n")
+#json.dump(average_clustering_coefficient, filewriter)
+#filewriter.write("\n\nTransitivity\n")
+#json.dump(transitivity, filewriter)
 filewriter.write("\n\nNumber of Deletion\n")
 json.dump(number_of_deletion, filewriter)
+filewriter.write("\n\nDeleted Nodes\n")
+json.dump(deleted_nodes, filewriter)
 
 #Reinsert
 import NodeReinsert as NR
 print("Node reinserting started...")
+reinserted_nodes=[]
 nr=NR.Reinsert(dismantled_graph, graph.adjacency_list, deleted_nodes, graph.N)
-dismantled_graph_node_reinserted=nr.reinsertNode()
+dismantled_graph_node_reinserted, reinserted_nodes=nr.reinsertNode()
 print("Node reinserting finished")
 
-efficiency_after_reinsert=nx.global_efficiency(dismantled_graph_node_reinserted)
-avg_cc_after_reinsert=nx.average_clustering(dismantled_graph_node_reinserted)
-transitivity_after_reinsert=nx.transitivity(dismantled_graph_node_reinserted)
+filewriter.write("\n\nReinserted Nodes\n")
+json.dump(reinserted_nodes, filewriter)
 
-filewriter.write("\n\nEfficiency After Reinsert\n")
-json.dump([efficiency_after_reinsert], filewriter)
-filewriter.write("\n\nAvg CC After Reinsert\n")
-json.dump([avg_cc_after_reinsert], filewriter)
-filewriter.write("\n\nTransitivity After Reinsert\n")
-json.dump([transitivity_after_reinsert], filewriter)
+#efficiency_after_reinsert=nx.global_efficiency(dismantled_graph_node_reinserted)
+#avg_cc_after_reinsert=nx.average_clustering(dismantled_graph_node_reinserted)
+#transitivity_after_reinsert=nx.transitivity(dismantled_graph_node_reinserted)
 
-filewriter.close()
+#filewriter.write("\n\nEfficiency After Reinsert\n")
+#json.dump([efficiency_after_reinsert], filewriter)
+#filewriter.write("\n\nAvg CC After Reinsert\n")
+#json.dump([avg_cc_after_reinsert], filewriter)
+#filewriter.write("\n\nTransitivity After Reinsert\n")
+#json.dump([transitivity_after_reinsert], filewriter)
 
 #Draw Network
 pos=nx.spring_layout(dismantled_graph)
 gcc=sorted(nx.connected_components(dismantled_graph_node_reinserted), key=len, reverse=True)
 largest_component=dismantled_graph_node_reinserted.subgraph(gcc[0])
 print("Largest component size: "+str(largest_component.number_of_nodes()))
+
+filewriter.write("\n\nLargest Component Size\n")
+filewriter.write(str(largest_component.number_of_nodes()))
+
 for sg in nx.connected_components(dismantled_graph_node_reinserted):
     component=dismantled_graph_node_reinserted.subgraph(sg)
     if component.number_of_nodes()==largest_component.number_of_nodes():
@@ -92,6 +100,8 @@ for sg in nx.connected_components(dismantled_graph_node_reinserted):
         nx.draw_networkx(component, pos=pos, with_labels=False, node_size=30, font_weight='bold', node_color='purple')
 #nx.draw_networkx(dismantled_graph, with_labels=False, node_size=20, font_weight='bold', node_color='red')
 
+filewriter.close()
+
 import matplotlib.pyplot as plt
-plt.title("Network After Dismantling and Node Reinserting (Email All)")
-plt.savefig('Email_CM.png')
+plt.title("Network After Dismantling and Node Reinserting (BB Road)")
+plt.savefig('BB_Road_DFBC.png')

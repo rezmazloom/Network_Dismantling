@@ -79,12 +79,12 @@ class Dismantle(BuildGraph):
         deletion_count=0
         number_of_deletion=[]
         number_of_deletion.append(deletion_count)
-        efficiency_list=[]
-        efficiency_list.append(nx.global_efficiency(self.G))
-        average_clustering_coefficient=[]
-        average_clustering_coefficient.append(nx.average_clustering(self.G))
-        transitivity=[]
-        transitivity.append(nx.transitivity(self.G))
+        #efficiency_list=[]
+        #efficiency_list.append(nx.global_efficiency(self.G))
+        #average_clustering_coefficient=[]
+        #average_clustering_coefficient.append(nx.average_clustering(self.G))
+        #transitivity=[]
+        #transitivity.append(nx.transitivity(self.G))
         print("Dismantling started...")
         threshold=0.01
         N=self.N
@@ -95,9 +95,9 @@ class Dismantle(BuildGraph):
         largest_component_fraction=[]
         largest_component_fraction.append(q)
         while(q>=threshold):
-            max_cm, max_cm_node=self.maxCMFromAllNodes()
+            #max_cm, max_cm_node=self.maxCMFromAllNodes()
             #max_cm, max_cm_node=self.maxBCFromAllNodes()
-            #max_cm, max_cm_node=self.maxDfBcFromAllNodes()
+            max_cm, max_cm_node=self.maxDfBcFromAllNodes()
             
             S.append(max_cm_node)
             self.G.remove_node(max_cm_node)
@@ -110,9 +110,9 @@ class Dismantle(BuildGraph):
             largest_component_fraction.append(q)
             deletion_count=deletion_count+1
             number_of_deletion.append(deletion_count)
-            efficiency_list.append(nx.global_efficiency(self.G))
-            average_clustering_coefficient.append(nx.average_clustering(self.G))
-            transitivity.append(nx.transitivity(self.G))
+            #efficiency_list.append(nx.global_efficiency(self.G))
+            #average_clustering_coefficient.append(nx.average_clustering(self.G))
+            #transitivity.append(nx.transitivity(self.G))
 
             #print(B.number_of_nodes())
             
@@ -120,7 +120,7 @@ class Dismantle(BuildGraph):
         print("Dismantling finished")
         #print("Efficiency after dismantling: "+str(nx.global_efficiency(self.G)))
 
-        return self.G, largest_component_fraction, efficiency_list, average_clustering_coefficient, transitivity, number_of_deletion, S
+        return self.G, largest_component_fraction, number_of_deletion, S
         #print("Number of deleted nodes: "+str(len(S)))
 
         #print("Algebraic connectivity after dismantling: "+str(nx.algebraic_connectivity(G)))

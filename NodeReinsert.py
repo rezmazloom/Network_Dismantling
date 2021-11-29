@@ -32,6 +32,7 @@ class Reinsert():
         return reinsert_node
 
     def reinsertNode(self):
+        reinserted_nodes=[]
         gcc=sorted(nx.connected_components(self.dismantled_graph), key=len, reverse=True)
         B=self.dismantled_graph.subgraph(gcc[0])
         q=B.number_of_nodes()/self.N
@@ -45,11 +46,13 @@ class Reinsert():
                 if i in self.dismantled_graph:
                     reinsert_edges.append((reinsert_node,i))
             self.dismantled_graph.add_edges_from(reinsert_edges)
+            reinserted_nodes.append(reinsert_node)
             gcc=sorted(nx.connected_components(self.dismantled_graph), key=len, reverse=True)
             B=self.dismantled_graph.subgraph(gcc[0])
             q=B.number_of_nodes()/self.N
             if q>=0.01:
                 self.dismantled_graph.remove_node(reinsert_node)
+                reinserted_nodes.remove(reinsert_node)
             self.deleted_nodes.remove(reinsert_node)
 
-        return self.dismantled_graph
+        return self.dismantled_graph, reinserted_nodes
