@@ -9,6 +9,11 @@ class Dismantle(BuildGraph):
         self.N=graph.N
 
     def calculateRLink(self, n):
+        
+        neighbors=self.findNeighbors(n)
+        neighbor_graph = self.G.subgraph(neighbors)
+        return nx.Graph.number_of_edges(neighbor_graph)
+        '''
         neighbors=self.findNeighbors(n)
         RLink=0
         i=0
@@ -22,6 +27,7 @@ class Dismantle(BuildGraph):
                 j=j+1
             i=i+1
         return RLink
+        '''
 
     def calculateDismantlingFactor(self, n):
         return self.G.degree(n)/(self.calculateRLink(n)+1)
@@ -69,6 +75,17 @@ class Dismantle(BuildGraph):
                 max_cm_node=i
         return max_cm, max_cm_node
 
+    def maxDfBcFromAllNodes2(self):
+        rlink = {}
+        dismantling_factor = {}
+        for n in self.G.nodes:
+            rlink[n] = nx.Graph.number_of_edges(self.G.subgraph(self.G.neighbors(n)))
+            dismantling_factor[n] = self.G.degree(n)/(rlink[n]+1)
+        bc_list=nx.betweenness_centrality(self.G)
+        #return max bc*df
+
+            
+
 
 #print("Algebraic connectivity before dismantling: "+str(nx.algebraic_connectivity(G)))
 #print("Efficiency before dismantling: "+str(nx.global_efficiency(G)))
@@ -113,7 +130,7 @@ class Dismantle(BuildGraph):
             #efficiency_list.append(nx.global_efficiency(self.G))
             #average_clustering_coefficient.append(nx.average_clustering(self.G))
             #transitivity.append(nx.transitivity(self.G))
-
+            print(deletion_count)
             #print(B.number_of_nodes())
             
 

@@ -68,8 +68,8 @@ def node_load_centrality(G, normalized=True):
     return nx.algorithms.load_centrality(G,normalized=normalized)
 
 # returns dict of edge load values
-def edge_load_centrality(G, normalized=True):
-    return nx.algorithms.edge_load_centrality(G,normalized=normalized)
+def edge_load_centrality(G):
+    return nx.algorithms.edge_load_centrality(G)
 
 # returns dict of node centrality values
 # sum of weighted closed walks of all lengths starting and ending at node

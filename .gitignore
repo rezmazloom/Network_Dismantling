@@ -1,0 +1,7 @@
+__**/
+*.pyc
+.*/
+figures*/
+plots/
+Result*/
+*.csv

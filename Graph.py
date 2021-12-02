@@ -11,10 +11,15 @@ class BuildGraph:
         self.N=self.G.number_of_nodes()
 
     def findNeighbors(self, n):
+        
+        return list(self.G.neighbors(n))
+        '''
         neighbors=[]
         for key, value in self.G[n].items():
             neighbors.append(key)
         return neighbors
+        '''
+        
 
     def buildAdjacencyList(self):
         adjacency_list={}
