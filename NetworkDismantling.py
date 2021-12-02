@@ -1,5 +1,6 @@
 import networkx as nx
 from Graph import BuildGraph
+import numpy as np
 
 class Dismantle(BuildGraph):
     def __init__(self, graph):
@@ -78,11 +79,15 @@ class Dismantle(BuildGraph):
     def maxDfBcFromAllNodes2(self):
         rlink = {}
         dismantling_factor = {}
-        for n in self.G.nodes:
-            rlink[n] = nx.Graph.number_of_edges(self.G.subgraph(self.G.neighbors(n)))
-            dismantling_factor[n] = self.G.degree(n)/(rlink[n]+1)
+        for n in self.nodes:
+            #rlink[n] = nx.Graph.number_of_edges(self.G.subgraph(self.G.neighbors(n)))
+            rlink[n] = self.calculateRLink(n)
+            #dismantling_factor[n] = self.G.degree(n)/(rlink[n]+1)
+            dismantling_factor[n] = self.calculateDismantlingFactor(n)
         bc_list=nx.betweenness_centrality(self.G)
-        #return max bc*df
+        keys = list(bc_list.keys())
+        dfbc = np.array([bc_list[key]*dismantling_factor[key] for key in keys])
+        return np.max(dfbc), keys[np.argmax(dfbc)]
 
             
 
@@ -114,7 +119,7 @@ class Dismantle(BuildGraph):
         while(q>=threshold):
             #max_cm, max_cm_node=self.maxCMFromAllNodes()
             #max_cm, max_cm_node=self.maxBCFromAllNodes()
-            max_cm, max_cm_node=self.maxDfBcFromAllNodes()
+            max_cm, max_cm_node=self.maxDfBcFromAllNodes2()
             
             S.append(max_cm_node)
             self.G.remove_node(max_cm_node)
@@ -130,7 +135,8 @@ class Dismantle(BuildGraph):
             #efficiency_list.append(nx.global_efficiency(self.G))
             #average_clustering_coefficient.append(nx.average_clustering(self.G))
             #transitivity.append(nx.transitivity(self.G))
-            print(deletion_count)
+            if deletion_count % 10 == 0:
+                print(deletion_count)
             #print(B.number_of_nodes())
             
 
