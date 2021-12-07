@@ -80,10 +80,16 @@ def subgraph_centrality(G):
 # returns dict of nodes reaching centrality values
 # local (LRC): proportion of other nodes reachable from that node
 # global: proportion of the graph that is reachable from the neighbors of the node (approximately)
-def reaching_centrality(G, local=False):
+def reaching_centrality(G: nx.Graph, local=False):
     if local:
-        return nx.algorithms.local_reaching_centrality(G)
+        result = {}
+        for node in G.nodes:
+            result[node] = nx.algorithms.local_reaching_centrality(G, node)
+        return result
     return nx.algorithms.global_reaching_centrality(G)
+
+def reaching_centrality_local(G):
+    return reaching_centrality(G, local=True)
 
 # returns dict of nodes harmonic centrality values
 # sum of the reciprocal of the shortest path distances from one node all other nodes 
@@ -111,6 +117,9 @@ def efficiency(G, local=False):
     if local:
         return nx.algorithms.local_efficiency(G)
     return nx.algorithms.global_efficiency(G)
+
+def efficiency_local(G):
+    return efficiency(G, local=True)
 
 # returns maximum flow AND dict with flows used through each edge
 # might be useful when fixing edges

@@ -31,10 +31,11 @@ def buildAdjacencyList(G: nx.Graph):
 
 def save_plot(G, path, position):
     nx.draw_networkx(G, pos=position, with_labels=False, node_size=10, font_weight='bold')
+    plt.tight_layout()
     plt.savefig(path)
     plt.close()
 
-def getLargestComponentFraction(G, N=None):
+def largest_component_fraction(G, N=None):
     if N is None:
         N = G.number_of_nodes()
     gcc=sorted(nx.connected_components(G), key=len, reverse=True)
@@ -85,8 +86,8 @@ if __name__ == "__main__":
         729523790, 216432515, 726781213, 3588552659, 726781181, 721634384, 700331123, 721634488, 726766476, 216451474, 729489036, 726772237, 687940709, 712707477, 700419433, 734272817, 726760329, 726768348, 733311091, 721635392
     ]
     '''
-    #FILEPATH = "Results/BB Road/Result_BBRoad_Largest_CM.txt"
-    #DIRNAME= "figures1CCM"
+    #FILEPATH = "Results/BB Road3/Result_BBRoad_Largest_BC_S1.txt"
+    #DIRNAME= "figuresBC_S1"
 
     FILEPATH = sys.argv[1]
     DIRNAME= sys.argv[2]
@@ -98,8 +99,8 @@ if __name__ == "__main__":
 
     measures=[fm.critical_fraction, fm.closeness_centrality, fm.edge_betweenness_centrality, fm.edge_connectivity,
                 fm.edge_load_centrality, fm.harmonic_centrality, fm.efficiency, fm.natural_connectivity, fm.node_betweenness_centrality,
-                fm.node_connectivity, fm.node_load_centrality, fm.reaching_centrality,getLargestComponentFraction, 
-                nx.number_connected_components
+                fm.node_connectivity, fm.node_load_centrality, fm.reaching_centrality, largest_component_fraction, 
+                nx.number_connected_components, fm.reaching_centrality_local, fm.efficiency_local, fm.EGR, fm.subgraph_centrality
             ]
     measures_col = [x.__name__ for x in measures]
     del_measure_results = []
